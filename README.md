@@ -35,6 +35,10 @@ fields:
   - key: 社員番号
     sheet: 新規_申請書
     cell: D4
+  - key: testKey
+    sheet: 新規_申請書
+    cell: D12
+    default: defaultValueForTestKey
 ```
 
 ## Dev
