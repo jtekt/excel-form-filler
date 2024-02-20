@@ -10,6 +10,7 @@ export type ConfigField = {
   key: string
   sheet: string
   cell: string
+  default?: string
 }
 
 export type ConfigRecord = {
@@ -35,15 +36,15 @@ async function fillExcel(input: any) {
   const workbook = new Excel.Workbook()
   await workbook.xlsx.read(fileStream)
 
-  for await (const item of config.fields) {
-    const worksheet = workbook.getWorksheet(item.sheet)
-    if (!worksheet) throw `Worksheet ${item.sheet} not found`
-    // @ts-ignore
-    if (!input[item.key]) throw `Missing key ${item.key}`
+  for await (const field of config.fields) {
+    const worksheet = workbook.getWorksheet(field.sheet)
+    if (!worksheet) throw `Worksheet ${field.sheet} not found`
 
-    const cell = worksheet.getCell(item.cell)
-    //@ts-ignore
-    cell.value = input[item.key]
+    const value = input[field.key] ?? field.default
+    if (!value) throw `Missing value for key ${field.key}`
+
+    const cell = worksheet.getCell(field.cell)
+    cell.value = value
   }
 
   return workbook
