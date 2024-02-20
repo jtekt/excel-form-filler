@@ -29,10 +29,10 @@ email:
     <p>添付ファイルで送らせて頂きます</p>
     <p>宜しくお願いします</p>
 fields:
-  - key: 部署名
+  - key: name
     cell: D3
     sheet: 新規_申請書
-  - key: 社員番号
+  - key: department
     sheet: 新規_申請書
     cell: D4
   - key: testKey
