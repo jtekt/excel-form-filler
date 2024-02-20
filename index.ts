@@ -5,7 +5,6 @@ import { sendAttachmentByEmail } from "./mail"
 import { Elysia } from "elysia"
 import { cors } from "@elysiajs/cors"
 import { minioClient, S3_BUCKET } from "./s3"
-
 const { APP_PORT = 80 } = process.env
 export type ConfigField = {
   key: string
@@ -54,12 +53,11 @@ async function fillExcel(input: any) {
 
 new Elysia()
   .use(cors())
-  .get("/", () => "Hello Elysia")
+  .get("/", () => ({
+    application: "Excel form filler",
+    // version,
+  }))
   .get("/config", () => config)
-  .post("/test", async ({ body }) => {
-    console.log({ body })
-    return "OK"
-  })
   .post("/data", async ({ body }) => {
     const { data, email }: any = body
 
