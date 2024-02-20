@@ -6,6 +6,7 @@ import { Elysia } from "elysia"
 import { cors } from "@elysiajs/cors"
 import { minioClient, S3_BUCKET } from "./s3"
 
+const { APP_PORT = 80 } = process.env
 export type ConfigField = {
   key: string
   sheet: string
@@ -75,6 +76,6 @@ new Elysia()
       return "Not implemented"
     }
   })
-  .listen(3000, () => {
-    console.log(`Elysia listening on port 3000`)
+  .listen(APP_PORT, () => {
+    console.log(`Elysia listening on port ${APP_PORT}`)
   })
