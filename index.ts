@@ -40,6 +40,7 @@ async function fillExcel(input: any) {
     const worksheet = workbook.getWorksheet(field.sheet)
     if (!worksheet) throw `Worksheet ${field.sheet} not found`
 
+    // TODO: deal with required / not required
     const value = input[field.key] ?? field.default
     if (!value) throw `Missing value for key ${field.key}`
 
@@ -54,19 +55,24 @@ new Elysia()
   .use(cors())
   .get("/", () => "Hello Elysia")
   .get("/config", () => config)
+  .post("/test", async ({ body }) => {
+    console.log({ body })
+    return "OK"
+  })
   .post("/data", async ({ body }) => {
     const { data, email }: any = body
 
     const workbook = await fillExcel(data)
 
-    if (email?.from) {
+    if (email?.from && config.email?.to) {
       const { from } = email
+      console.log(`Sending email to ${config.email.to}`)
       const fileBuffer = await workbook.xlsx.writeBuffer()
       await sendAttachmentByEmail(fileBuffer, from, config)
       return "OK"
     } else {
       // TODO: respond with file
-      return "File"
+      return "Not implemented"
     }
   })
   .listen(3000, () => {

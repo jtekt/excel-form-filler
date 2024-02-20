@@ -26,6 +26,7 @@ export async function sendAttachmentByEmail(
   const info = await transporter.sendMail({
     from,
     to,
+    cc: from,
     subject,
     html,
     attachments: [
