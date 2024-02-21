@@ -1,6 +1,7 @@
 import { sendAttachmentByEmail } from "./mail"
 import { Elysia } from "elysia"
 import { cors } from "@elysiajs/cors"
+import { swagger } from "@elysiajs/swagger"
 import { S3_BUCKET, S3_ENDPOINT, getFileList, getConfigFromS3 } from "./s3"
 import { fillExcel } from "./excel"
 
@@ -25,6 +26,7 @@ export type ConfigRecord = {
 
 new Elysia()
   .use(cors())
+  .use(swagger())
   .get("/", () => ({
     application: "Excel form filler",
     author: "Maxime Moreillon",
@@ -39,10 +41,10 @@ new Elysia()
     return getConfigFromS3(key)
   })
   .post("/applications/:key", async ({ body, params }) => {
-    const { key: ApplicationKey } = params
+    const { key } = params
     const { data, email }: any = body
 
-    const config: any = await getConfigFromS3(ApplicationKey)
+    const config: any = await getConfigFromS3(key)
     const workbook = await fillExcel(data, config)
 
     if (email?.from && config.email?.to) {

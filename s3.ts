@@ -31,7 +31,7 @@ export const getFileList = (bucket: string, prefix: string) =>
       const { name } = path.parse(obj?.name)
       objects.push(name)
     })
-    stream.on("error", function (err) {
+    stream.on("error", (err) => {
       reject(err)
     })
     stream.on("end", () => {
