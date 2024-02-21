@@ -57,6 +57,7 @@ new Elysia()
   .use(cors())
   .get("/", () => ({
     application: "Excel form filler",
+    author: "Maxime Moreillon",
     s3: {
       bucket: S3_BUCKET,
       endpoint: S3_ENDPOINT,
