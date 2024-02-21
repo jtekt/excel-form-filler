@@ -4,8 +4,10 @@ import { readFileSync } from "fs"
 import { sendAttachmentByEmail } from "./mail"
 import { Elysia } from "elysia"
 import { cors } from "@elysiajs/cors"
-import { minioClient, S3_BUCKET } from "./s3"
+import { minioClient, S3_BUCKET, S3_ENDPOINT } from "./s3"
+
 const { APP_PORT = 80 } = process.env
+
 export type ConfigField = {
   key: string
   sheet: string
@@ -55,7 +57,10 @@ new Elysia()
   .use(cors())
   .get("/", () => ({
     application: "Excel form filler",
-    // version,
+    s3: {
+      bucket: S3_BUCKET,
+      endpoint: S3_ENDPOINT,
+    },
   }))
   .get("/config", () => config)
   .post("/data", async ({ body }) => {
