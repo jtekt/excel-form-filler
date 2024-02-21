@@ -16,7 +16,7 @@ const body = {
 
 ## Configuration schema
 
-./config/config.yml
+example.yml
 
 ```yml
 fileKey: myFile.xlsx
@@ -32,6 +32,7 @@ fields:
   - key: name
     cell: D3
     sheet: 新規_申請書
+    required: true
   - key: department
     sheet: 新規_申請書
     cell: D4

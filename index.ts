@@ -12,6 +12,7 @@ export type ConfigField = {
   sheet: string
   cell: string
   default?: string
+  required?: boolean
 }
 
 export type ConfigRecord = {

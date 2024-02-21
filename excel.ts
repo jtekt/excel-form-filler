@@ -1,8 +1,8 @@
 import Excel from "exceljs"
-
+import { ConfigRecord } from "."
 import { minioClient, S3_BUCKET } from "./s3"
 
-export async function fillExcel(input: any, config: any) {
+export async function fillExcel(input: any, config: ConfigRecord) {
   // Excel file
   const fileKey = `xlsx/${config.fileKey}`
 
@@ -15,12 +15,12 @@ export async function fillExcel(input: any, config: any) {
     const worksheet = workbook.getWorksheet(field.sheet)
     if (!worksheet) throw `Worksheet ${field.sheet} not found`
 
-    // TODO: deal with required / not required
     const value = input[field.key] ?? field.default
-    if (!value) throw `Missing value for key ${field.key}`
-
-    const cell = worksheet.getCell(field.cell)
-    cell.value = value
+    if (!value && field.required) throw `Missing value for key ${field.key}`
+    if (value) {
+      const cell = worksheet.getCell(field.cell)
+      cell.value = value
+    }
   }
 
   return workbook
