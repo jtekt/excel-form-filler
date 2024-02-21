@@ -1,6 +1,5 @@
 import Excel from "exceljs"
 import YAML from "yaml"
-import { readFileSync } from "fs"
 import { sendAttachmentByEmail } from "./mail"
 import { Elysia } from "elysia"
 import { cors } from "@elysiajs/cors"
@@ -25,14 +24,10 @@ export type ConfigRecord = {
   fields: ConfigField[]
 }
 
-// Config
-const configFilePath = "./config/config.yml"
-const configFile = readFileSync(configFilePath, "utf8")
-const config: ConfigRecord = YAML.parse(configFile)
-
-async function fillExcel(input: any) {
+async function fillExcel(input: any, config: any) {
   // Excel file
-  const { fileKey } = config
+  const fileKey = `xlsx/${config.fileKey}`
+
   console.log(`Fetching ${fileKey} from S3 bucket ${S3_BUCKET}`)
   const fileStream = await minioClient.getObject(S3_BUCKET, fileKey)
   const workbook = new Excel.Workbook()
@@ -53,6 +48,37 @@ async function fillExcel(input: any) {
   return workbook
 }
 
+const stream2Buffer = (dataStream: any) =>
+  new Promise((resolve, reject) => {
+    const chunks: any = []
+    dataStream.on("data", (chunk: any) => chunks.push(chunk))
+    dataStream.on("end", () => resolve(Buffer.concat(chunks)))
+    dataStream.on("error", reject)
+  })
+
+const getFileList = (bucket: string, prefix: string) =>
+  new Promise(async (resolve, reject) => {
+    const stream = await minioClient.listObjects(bucket, prefix)
+    const objects: any[] = []
+    stream.on("data", function (obj) {
+      objects.push(obj.name?.split(prefix)[1])
+    })
+    stream.on("error", function (err) {
+      reject(err)
+    })
+    stream.on("end", () => {
+      resolve(objects)
+    })
+  })
+
+const getConfigFromS3 = async (bucket: string, key: string) => {
+  const stream = await minioClient.getObject(
+    S3_BUCKET,
+    `yml/${decodeURIComponent(key)}`
+  )
+  const buffer: any = await stream2Buffer(stream)
+  return YAML.parse(buffer.toString())
+}
 new Elysia()
   .use(cors())
   .get("/", () => ({
@@ -63,11 +89,18 @@ new Elysia()
       endpoint: S3_ENDPOINT,
     },
   }))
-  .get("/config", () => config)
-  .post("/data", async ({ body }) => {
+  .get("/applications", async () => await getFileList(S3_BUCKET, "yml/"))
+  .get("/applications/:key", async ({ params }) => {
+    const { key } = params
+    return getConfigFromS3(S3_BUCKET, key)
+  })
+  .post("/applications/:key", async ({ body, params }) => {
+    const { key: ApplicationKey } = params
     const { data, email }: any = body
 
-    const workbook = await fillExcel(data)
+    const config: any = await getConfigFromS3(S3_BUCKET, ApplicationKey)
+
+    const workbook = await fillExcel(data, config)
 
     if (email?.from && config.email?.to) {
       const { from } = email
