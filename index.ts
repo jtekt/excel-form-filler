@@ -4,7 +4,7 @@ import { cors } from "@elysiajs/cors"
 import { swagger } from "@elysiajs/swagger"
 import { S3_BUCKET, S3_ENDPOINT, getFileList, getConfigFromS3 } from "./s3"
 import { fillExcel } from "./excel"
-
+import { version, author } from "./package.json"
 const { APP_PORT = 80 } = process.env
 
 export type ConfigField = {
@@ -43,7 +43,8 @@ new Elysia()
   .use(swagger())
   .get("/", () => ({
     application: "Excel form filler",
-    author: "Maxime Moreillon",
+    author,
+    version,
     s3: {
       bucket: S3_BUCKET,
       endpoint: S3_ENDPOINT,
