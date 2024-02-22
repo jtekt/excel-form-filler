@@ -22,7 +22,7 @@ export async function sendAttachmentByEmail(
   const { email: configEmail, fileKey } = configRecord
 
   const to = userEmailConfig.to || configEmail.to
-  const cc = `${from};${userEmailConfig.cc}`
+  const cc = userEmailConfig.cc || from
   const subject = userEmailConfig.subject || configEmail.subject || "申請書"
   const html = userEmailConfig.html || configEmail.html || "ご確認ください"
 
