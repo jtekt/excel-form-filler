@@ -22,6 +22,7 @@ export async function sendAttachmentByEmail(
   const { email: configEmail, fileKey } = configRecord
 
   const to = userEmailConfig.to || configEmail.to
+  const cc = `${from};${userEmailConfig.cc}`
   const subject = userEmailConfig.subject || configEmail.subject || "申請書"
   const html = userEmailConfig.html || configEmail.html || "ご確認ください"
 
@@ -33,7 +34,7 @@ export async function sendAttachmentByEmail(
   const info = await transporter.sendMail({
     from,
     to,
-    cc: from,
+    cc,
     subject,
     html,
     attachments: [

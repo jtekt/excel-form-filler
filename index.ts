@@ -30,6 +30,7 @@ export type UserEmailConfig = {
   to?: string
   html?: string
   subject?: string
+  cc?: string
 }
 
 export type RequestBody = {

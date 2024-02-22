@@ -21,7 +21,7 @@ example.yml
 ```yml
 fileKey: myFile.xlsx
 email:
-  to: john.doe@example.com
+  to: richard.roe@example.com
   subject: example
   html: >
     <b>このメールは自動的に送信されました</b>
