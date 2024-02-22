@@ -45,19 +45,15 @@ new Elysia()
     const { key } = params
     const { data, email }: any = body
 
-    const config: any = await getConfigFromS3(key)
+    const config: ConfigRecord = await getConfigFromS3(key)
     const workbook = await fillExcel(data, config)
 
-    if (email?.from && config.email?.to) {
-      const { from } = email
-      console.log(`Sending email to ${config.email.to}`)
-      const fileBuffer = await workbook.xlsx.writeBuffer()
-      await sendAttachmentByEmail(fileBuffer, from, config)
-      return "OK"
-    } else {
-      // TODO: respond with file
-      return "Not implemented"
-    }
+    if (!email?.from) throw "Sender email not defined"
+    if (!config.email?.to) throw "Recipient email not defined"
+    console.log(`Sending email to ${config.email.to}`)
+    const fileBuffer = await workbook.xlsx.writeBuffer()
+    await sendAttachmentByEmail(fileBuffer, email.from, config)
+    return "OK"
   })
   .listen(APP_PORT, () => {
     console.log(`Elysia listening on port ${APP_PORT}`)
