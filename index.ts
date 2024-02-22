@@ -25,6 +25,18 @@ export type ConfigRecord = {
   fields: ConfigField[]
 }
 
+export type UserEmailConfig = {
+  from: string
+  to?: string
+  html?: string
+  subject?: string
+}
+
+export type RequestBody = {
+  email: UserEmailConfig
+  data: any
+}
+
 new Elysia()
   .use(cors())
   .use(swagger())
@@ -43,16 +55,13 @@ new Elysia()
   })
   .post("/applications/:key", async ({ body, params }) => {
     const { key } = params
-    const { data, email }: any = body
+    const { data, email } = body as RequestBody
 
     const config: ConfigRecord = await getConfigFromS3(key)
     const workbook = await fillExcel(data, config)
 
-    if (!email?.from) throw "Sender email not defined"
-    if (!config.email?.to) throw "Recipient email not defined"
-    console.log(`Sending email to ${config.email.to}`)
     const fileBuffer = await workbook.xlsx.writeBuffer()
-    await sendAttachmentByEmail(fileBuffer, email.from, config)
+    await sendAttachmentByEmail(fileBuffer, email, config)
     return "OK"
   })
   .listen(APP_PORT, () => {

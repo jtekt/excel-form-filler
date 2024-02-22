@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer"
-import { type ConfigRecord } from "."
+import { type ConfigRecord, UserEmailConfig } from "."
 
 const { SMTP_HOST = "localhost", SMTP_PORT = "25" } = process.env
 
@@ -15,13 +15,20 @@ export const transporter = nodemailer.createTransport({
 
 export async function sendAttachmentByEmail(
   fileBuffer: any,
-  from: string,
+  userEmailConfig: UserEmailConfig,
   configRecord: ConfigRecord
 ) {
-  const {
-    email: { to, subject, html },
-    fileKey,
-  } = configRecord
+  const { from } = userEmailConfig
+  const { email: configEmail, fileKey } = configRecord
+
+  const to = userEmailConfig.to || configEmail.to
+  const subject = userEmailConfig.subject || configEmail.subject || "申請書"
+  const html = userEmailConfig.html || configEmail.html || "ご確認ください"
+
+  if (!from) throw "Sender email not defined"
+  if (!to) throw "Recipient email not defined"
+
+  console.log(`Sending email to ${to}`)
 
   const info = await transporter.sendMail({
     from,
