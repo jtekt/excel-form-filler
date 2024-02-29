@@ -48,7 +48,10 @@ app.post("/applications/:key", async (req, res) => {
   const { data, email } = req.body
 
   const config = await getConfigFromS3(key)
-  const workbook = await fillExcel(data, config)
+  const workbook = await fillExcel(data, {
+    ...config,
+    fileKey: `xlsx/${config.fileKey}`,
+  })
 
   const fileBuffer = await workbook.xlsx.writeBuffer()
   await sendAttachmentByEmail(fileBuffer, email, config)
