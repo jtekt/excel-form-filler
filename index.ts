@@ -5,6 +5,8 @@ import { swagger } from "@elysiajs/swagger"
 import { S3_BUCKET, S3_ENDPOINT, getFileList, getConfigFromS3 } from "./s3"
 import { fillExcel } from "./excel"
 import { version, author } from "./package.json"
+import { connect as dbConnect } from "./db"
+import { readForms } from "./controllers/excelForms"
 const { APP_PORT = 80 } = process.env
 
 export type ConfigField = {
@@ -38,6 +40,8 @@ export type RequestBody = {
   data: any
 }
 
+dbConnect()
+
 new Elysia()
   .use(cors())
   .use(swagger())
@@ -66,6 +70,7 @@ new Elysia()
     await sendAttachmentByEmail(fileBuffer, email, config)
     return "OK"
   })
+  .get("/forms", readForms)
   .listen(APP_PORT, () => {
     console.log(`Elysia listening on port ${APP_PORT}`)
   })
