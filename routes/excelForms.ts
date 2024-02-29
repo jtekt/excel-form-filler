@@ -5,6 +5,8 @@ import {
   readForms,
   submitForm,
   getFormFile,
+  updateForm,
+  deleteForm,
 } from "../controllers/excelForms"
 import multer from "multer"
 import multerMinIOStorage from "multer-minio-storage"
@@ -24,7 +26,12 @@ const router = Router()
 
 router.route("/").post(upload.single("form"), createForm).get(readForms)
 
-router.route("/:_id").post(submitForm).get(readForm)
+router
+  .route("/:_id")
+  .post(submitForm)
+  .get(readForm)
+  .patch(updateForm)
+  .delete(deleteForm)
 router.route("/:_id/file").get(getFormFile)
 
 export default router
