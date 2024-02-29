@@ -4,6 +4,7 @@ import {
   readForm,
   readForms,
   submitForm,
+  getFormFile,
 } from "../controllers/excelForms"
 import multer from "multer"
 import multerMinIOStorage from "multer-minio-storage"
@@ -13,7 +14,7 @@ var upload = multer({
   storage: multerMinIOStorage({
     minioClient: minioClient,
     bucket: S3_BUCKET,
-    key: function (req, file, cb) {
+    key(req, file, cb) {
       cb(null, file.originalname)
     },
   }),
@@ -24,5 +25,6 @@ const router = Router()
 router.route("/").post(upload.single("form"), createForm).get(readForms)
 
 router.route("/:_id").post(submitForm).get(readForm)
+router.route("/:_id/file").get(getFormFile)
 
 export default router

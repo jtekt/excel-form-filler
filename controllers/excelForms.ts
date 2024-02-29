@@ -2,6 +2,7 @@ import ExcelForm from "../models/excelForm"
 import { Request, Response } from "express"
 import { fillExcel } from "../excel"
 import { sendAttachmentByEmail } from "../mail"
+import { sendFormFromS3 } from "../s3"
 
 export type ConfigField = {
   key: string
@@ -9,16 +10,6 @@ export type ConfigField = {
   cell: string
   default?: string
   required?: boolean
-}
-
-export type ConfigRecord = {
-  fileKey: string
-  email: {
-    to: string
-    subject: string
-    html: string
-  }
-  fields: ConfigField[]
 }
 
 export type UserEmailConfig = {
@@ -79,4 +70,12 @@ export const submitForm = async (req: Request, res: Response) => {
   await sendAttachmentByEmail(fileBuffer, email, config)
 
   res.send("OK")
+}
+
+export const getFormFile = async (req: Request, res: Response) => {
+  const { _id } = req.params
+  const config = await ExcelForm.findById(_id)
+
+  if (!config) throw "Not found"
+  sendFormFromS3(res, config.fileKey)
 }
