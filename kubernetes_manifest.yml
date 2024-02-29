@@ -20,6 +20,8 @@ spec:
           env:
             - name: S3_BUCKET
               value: excel-filler
+            - name: MONGODB_CONNECTION_STRING
+              value: mongodb://mongo/excel_form_filler
           envFrom:
             - secretRef:
                 name: environment-variables

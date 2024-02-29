@@ -1,5 +1,6 @@
 import { Client } from "minio"
 import path from "path"
+import { Response } from "express"
 import YAML from "yaml"
 
 export const {
@@ -22,6 +23,28 @@ export const minioClient = new Client({
   region: S3_REGION,
 })
 
+export const sendFormFromS3 = async (res: Response, key: any) => {
+  const stream = await minioClient.getObject(S3_BUCKET, key)
+
+  if (!stream) throw "No stream available"
+
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${encodeURIComponent(key)}`
+  )
+
+  stream.on("data", (chunk) => {
+    res.write(chunk)
+  })
+  stream.on("end", () => {
+    res.end()
+  })
+  stream.on("error", (err) => {
+    res.end()
+  })
+}
+
+// Legacy
 export const getFileList = (bucket: string, prefix: string) =>
   new Promise(async (resolve, reject) => {
     const stream = await minioClient.listObjects(bucket, prefix)

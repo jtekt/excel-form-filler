@@ -1,10 +1,8 @@
 import Excel from "exceljs"
-import { ConfigRecord } from "."
 import { minioClient, S3_BUCKET } from "./s3"
 
-export async function fillExcel(input: any, config: ConfigRecord) {
-  // Excel file
-  const fileKey = `xlsx/${config.fileKey}`
+export async function fillExcel(input: any, config: any) {
+  const fileKey = config.fileKey
 
   console.log(`Fetching ${fileKey} from S3 bucket ${S3_BUCKET}`)
   const fileStream = await minioClient.getObject(S3_BUCKET, fileKey)
