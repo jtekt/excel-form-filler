@@ -26,4 +26,4 @@ export const connect = () =>
       })
   })
 
-export const connected = () => mongoose.connection.readyState
+export const getConnectionState = () => mongoose.connection.readyState

@@ -4,7 +4,11 @@ import "express-async-errors"
 import cors from "cors"
 import { S3_BUCKET, S3_ENDPOINT, getFileList } from "./s3"
 import { version, author } from "./package.json"
-import { connect as dbConnect } from "./db"
+import {
+  getConnectionState,
+  connect as dbConnect,
+  redactedConnectionString,
+} from "./db"
 import excelFormsRouter from "./routes/excelForms"
 
 import { getConfigFromS3 } from "./s3"
@@ -25,6 +29,10 @@ app.get("/", (req, res) => {
     s3: {
       bucket: S3_BUCKET,
       endpoint: S3_ENDPOINT,
+    },
+    mongodb: {
+      url: redactedConnectionString,
+      connected: getConnectionState(),
     },
   })
 })
