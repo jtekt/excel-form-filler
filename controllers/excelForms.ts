@@ -56,7 +56,10 @@ export const readForm = async (req: Request, res: Response) => {
 }
 
 export const updateForm = async (req: Request, res: Response) => {
-  res.send("Not implemented")
+  const { _id } = req.params
+  const properties = req.body
+  const item = await ExcelForm.findByIdAndUpdate(_id, properties)
+  res.send(item)
 }
 
 export const deleteForm = async (req: Request, res: Response) => {
