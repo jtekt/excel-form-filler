@@ -6,6 +6,7 @@ const fieldSchema = new Schema({
   sheet: String,
   required: Boolean,
   autoFill: String,
+  default: String,
 })
 const excelFormSchema = new Schema({
   fileKey: {

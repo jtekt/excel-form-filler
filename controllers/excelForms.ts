@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import { fillExcel } from "../excel"
 import { sendAttachmentByEmail } from "../mail"
 import { sendFormFromS3 } from "../s3"
+import createHttpError from "http-errors"
 
 export type ConfigField = {
   key: string
@@ -27,7 +28,7 @@ export type RequestBody = {
 
 export const createForm = async (req: Request, res: Response) => {
   const { file } = req
-  if (!file) throw "File not provided"
+  if (!file) throw createHttpError(400, "File not provided")
   const fileKey = file.originalname
   const newItem = await ExcelForm.create({ fileKey })
   res.send(newItem)
