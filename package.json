@@ -1,6 +1,6 @@
 {
   "name": "excel-form-filler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Maxime MOREILLON",
   "module": "index.ts",
   "type": "module",
