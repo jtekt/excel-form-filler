@@ -175,9 +175,5 @@ dist
 .DS_Store
 
 
-input.ts
-output.xlsx
-config.yml
-config/
-config
-config/config.yml
+
+build

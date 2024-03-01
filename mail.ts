@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer"
-import { type ConfigRecord, UserEmailConfig } from "."
+import { UserEmailConfig } from "./controllers/excelForms"
 
 const { SMTP_HOST = "localhost", SMTP_PORT = "25" } = process.env
 
@@ -16,7 +16,7 @@ export const transporter = nodemailer.createTransport({
 export async function sendAttachmentByEmail(
   fileBuffer: any,
   userEmailConfig: UserEmailConfig,
-  configRecord: ConfigRecord
+  configRecord: any
 ) {
   const { from } = userEmailConfig
   const { email: configEmail, fileKey } = configRecord
