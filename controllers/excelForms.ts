@@ -49,7 +49,7 @@ export const readForm = async (req: Request, res: Response) => {
 
 export const updateForm = async (req: Request, res: Response) => {
   const { _id } = req.params
-  const properties = req.body
+  const { _id: _, ...properties } = req.body
   const item = await ExcelForm.findByIdAndUpdate(_id, properties)
   res.send(item)
 }

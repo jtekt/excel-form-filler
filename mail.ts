@@ -29,9 +29,9 @@ export async function sendAttachmentByEmail(
   if (!from) throw "Sender email not defined"
   if (!to) throw "Recipient email not defined"
 
-  console.log(`Sending email to ${to}`)
+  console.log(`Sending email with subject ${subject} from ${from} to ${to}`)
 
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from,
     to,
     cc,
@@ -44,6 +44,4 @@ export async function sendAttachmentByEmail(
       },
     ],
   })
-
-  console.log("Message sent: %s", info.messageId)
 }
