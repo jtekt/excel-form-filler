@@ -17,7 +17,7 @@ var upload = multer({
     minioClient: minioClient,
     bucket: S3_BUCKET,
     key(req, file, cb) {
-      cb(null, file.originalname)
+      cb(null, decodeURIComponent(file.originalname))
     },
   }),
 })

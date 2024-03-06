@@ -29,7 +29,7 @@ export type RequestBody = {
 export const createForm = async (req: Request, res: Response) => {
   const { file } = req
   if (!file) throw createHttpError(400, "File not provided")
-  const fileKey = file.originalname
+  const fileKey = decodeURIComponent(file.originalname)
   const newItem = await ExcelForm.create({ fileKey })
   res.send(newItem)
 }
