@@ -22,6 +22,8 @@ spec:
               value: excel-filler
             - name: MONGODB_CONNECTION_STRING
               value: mongodb://mongo/excel_form_filler
+            - name: LOKI_URL
+              value: http://loki.monitoring:3100
           envFrom:
             - secretRef:
                 name: environment-variables

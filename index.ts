@@ -4,6 +4,7 @@ dotenv.config()
 import express from "express"
 import "express-async-errors"
 
+import auth from "@moreillon/express_identification_middleware"
 import cors from "cors"
 import { S3_BUCKET, S3_ENDPOINT } from "./s3"
 import { version, author } from "./package.json"
@@ -13,7 +14,11 @@ import {
   redactedConnectionString,
 } from "./db"
 import excelFormsRouter from "./routes/excelForms"
-const { APP_PORT = 80 } = process.env
+import { LOKI_URL } from "./logger"
+
+const { APP_PORT = 80, IDENTIFICATION_URL } = process.env
+
+const authOptions = { url: IDENTIFICATION_URL }
 
 dbConnect()
 
@@ -33,9 +38,14 @@ app.get("/", (req, res) => {
       url: redactedConnectionString,
       connected: getConnectionState(),
     },
+    auth: {
+      url: IDENTIFICATION_URL,
+    },
+    loki: LOKI_URL,
   })
 })
 
+app.use(auth(authOptions))
 app.use("/forms", excelFormsRouter)
 
 app.listen(APP_PORT, () => {

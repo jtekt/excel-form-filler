@@ -4,7 +4,7 @@ import { fillExcel } from "../excel"
 import { sendAttachmentByEmail } from "../mail"
 import { sendFormFromS3 } from "../s3"
 import createHttpError from "http-errors"
-
+import { logger } from "../logger"
 export type ConfigField = {
   key: string
   sheet: string
@@ -65,10 +65,17 @@ export const submitForm = async (req: Request, res: Response) => {
   const { data, email } = req.body
   const config = await ExcelForm.findById(_id)
 
+  if (!config) throw createHttpError(404, `Form ${_id} not found`)
+
   const workbook = await fillExcel(data, config)
 
   const fileBuffer = await workbook.xlsx.writeBuffer()
   await sendAttachmentByEmail(fileBuffer, email, config)
+
+  logger.info({
+    from: email.from,
+    fileKey: config.fileKey,
+  })
 
   res.send("OK")
 }
