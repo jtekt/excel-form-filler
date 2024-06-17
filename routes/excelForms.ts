@@ -31,7 +31,10 @@ router
   .post(submitForm)
   .get(readForm)
   .patch(updateForm)
-  .delete(deleteForm)
-router.route("/:_id/file").get(getFormFile)
+  .delete(deleteForm);
+router
+  .route("/:_id/file")
+  .get(getFormFile)
+  .patch(upload.single("form"), updateForm);
 
 export default router
