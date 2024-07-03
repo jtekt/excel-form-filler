@@ -4,9 +4,8 @@
   "author": "Maxime MOREILLON",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.ts",
-    "build": "tsc --outdir ./build -p . ",
-    "start": "node ./build/index.js"
+    "dev": "bun run --watch index.ts",
+    "start": "bun run index.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.1.6",
