@@ -1,4 +1,4 @@
-import { Router } from "express"
+import { Hono } from "hono";
 import {
   createForm,
   readForm,
@@ -6,32 +6,21 @@ import {
   submitForm,
   getFormFile,
   updateForm,
+  updateFile,
   deleteForm,
-} from "../controllers/excelForms"
-import multer from "multer"
-import multerMinIOStorage from "multer-minio-storage"
-import { minioClient, S3_BUCKET } from "../s3"
+} from "../controllers/excelForms";
+import { uploadMiddleware } from "../s3";
 
-var upload = multer({
-  storage: multerMinIOStorage({
-    minioClient: minioClient,
-    bucket: S3_BUCKET,
-    key(req, file, cb) {
-      cb(null, decodeURIComponent(file.originalname))
-    },
-  }),
-})
+const router = new Hono();
 
-const router = Router()
+router.post("/", uploadMiddleware, createForm);
+router.get("/", readForms);
 
-router.route("/").post(upload.single("form"), createForm).get(readForms)
+router.post("/:_id", submitForm);
+router.get("/:_id", readForm);
+router.patch("/:_id", updateForm);
+router.delete("/:_id", deleteForm);
+router.get("/:_id/file", getFormFile);
+router.patch("/:_id/file", uploadMiddleware, updateFile);
 
-router
-  .route("/:_id")
-  .post(submitForm)
-  .get(readForm)
-  .patch(updateForm)
-  .delete(deleteForm)
-router.route("/:_id/file").get(getFormFile)
-
-export default router
+export default router;
