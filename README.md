@@ -1,4 +1,6 @@
-# excel-form-filler
+# Excel form filler
+
+A simple application used to fill and send Excel application forms.
 
 ## Request body
 
