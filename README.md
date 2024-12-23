@@ -27,7 +27,7 @@ const body = {
 - SMTP_PORT
 - MONGODB_CONNECTION_STRING
 - IDENTIFICATION_URL
-- LOKI_URL
+- LOKI_URL (optional)
 
 ## Dev
 
