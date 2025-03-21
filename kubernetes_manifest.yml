@@ -26,7 +26,7 @@ spec:
             - secretRef:
                 name: environment-variables
             - secretRef:
-              name: excel-form-filler-env
+                name: excel-form-filler-env
       #     volumeMounts:
       #       - mountPath: /usr/src/app/config/config.yml
       #         name: ${APPLICATION_NAME}-config
