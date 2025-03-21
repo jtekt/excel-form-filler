@@ -15,13 +15,9 @@ spec:
       containers:
         - name: ${APPLICATION_NAME}
           image: ${CONTAINER_IMAGE_TAGGED}
-          ports:
-            - containerPort: 80
           env:
             - name: S3_BUCKET
               value: excel-filler
-            - name: MONGODB_CONNECTION_STRING
-              value: mongodb://mongo/excel_form_filler
             - name: LOKI_URL
               value: http://loki.monitoring:3100
             - name: IDENTIFICATION_URL
@@ -29,14 +25,16 @@ spec:
           envFrom:
             - secretRef:
                 name: environment-variables
-          volumeMounts:
-            - mountPath: /usr/src/app/config/config.yml
-              name: ${APPLICATION_NAME}-config
-              subPath: config.yml
-      volumes:
-        - name: ${APPLICATION_NAME}-config
-          configMap:
-            name: ${APPLICATION_NAME}-config
+            - secretRef:
+              name: excel-form-filler-env
+      #     volumeMounts:
+      #       - mountPath: /usr/src/app/config/config.yml
+      #         name: ${APPLICATION_NAME}-config
+      #         subPath: config.yml
+      # volumes:
+      #   - name: ${APPLICATION_NAME}-config
+      #     configMap:
+      #       name: ${APPLICATION_NAME}-config
       imagePullSecrets:
         - name: ${K8S_ECR_SECRET_NAME}
 
