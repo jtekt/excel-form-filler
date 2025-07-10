@@ -29,8 +29,6 @@ export async function sendAttachmentByEmail(
   if (!from) throw "Sender email not defined"
   if (!to) throw "Recipient email not defined"
 
-  console.log(`Sending email with subject ${subject} from ${from} to ${to}`)
-
   await transporter.sendMail({
     from,
     to,
@@ -44,4 +42,11 @@ export async function sendAttachmentByEmail(
       },
     ],
   })
+}
+
+export function interpolate(template: string, variables: Record<string, any>) {
+  return template.replace(/{{\s*(\w+)\s*}}/g, (_, key) => {
+    const value = variables[key];
+    return value != null ? String(value) : `<span style="color:red;">{{${key}}}</span>`;
+  });
 }

@@ -1,7 +1,7 @@
 import ExcelForm from "../models/excelForm";
 import { Context } from "hono";
 import { fillExcel } from "../excel";
-import { sendAttachmentByEmail } from "../mail";
+import { interpolate, sendAttachmentByEmail } from "../mail";
 import { sendFormFromS3 } from "../s3";
 import createHttpError from "http-errors";
 import { logger } from "../logger";
@@ -84,7 +84,9 @@ export const submitForm = async (c: Context) => {
   const workbook = await fillExcel(data, config);
 
   const fileBuffer = await workbook.xlsx.writeBuffer();
-  await sendAttachmentByEmail(fileBuffer, email, config);
+
+  let emailBody = interpolate(email.html, data)
+  await sendAttachmentByEmail(fileBuffer, { ...email, html: emailBody }, config);
 
   logger.info({
     from: email.from,
