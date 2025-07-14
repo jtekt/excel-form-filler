@@ -5,7 +5,7 @@ import { Hono, Context } from "hono"
 import { cors } from "hono/cors"
 import { HTTPException } from "hono/http-exception"
 
-import { authMiddleware } from "./auth-middleware"
+import authMiddleware from "@moreillon/hono-oidc-middleware"
 
 import { S3_BUCKET, S3_ENDPOINT } from "./s3"
 import { version, author } from "./package.json"
@@ -17,10 +17,10 @@ import {
 import excelFormsRouter from "./routes/excelForms"
 import { LOKI_URL } from "./logger"
 
-const { APP_PORT = 80, IDENTIFICATION_URL } = process.env
-if (!IDENTIFICATION_URL) throw "IDENTIFICATION_URL not set"
+const { APP_PORT = 80, OIDC_JWKS_URI } = process.env
+if (!OIDC_JWKS_URI) throw "OIDC_JWKS_URI not set"
 
-const authOptions = { url: IDENTIFICATION_URL }
+const authOptions = { jwksUri: OIDC_JWKS_URI }
 
 dbConnect()
 
@@ -41,7 +41,7 @@ app.get("/", (c: Context) => {
       connected: getConnectionState(),
     },
     auth: {
-      url: IDENTIFICATION_URL,
+      url: OIDC_JWKS_URI,
     },
     loki: LOKI_URL,
   })
