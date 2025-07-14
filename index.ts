@@ -5,7 +5,7 @@ import { Hono, Context } from "hono"
 import { cors } from "hono/cors"
 import { HTTPException } from "hono/http-exception"
 
-import authMiddleware from "@moreillon/hono-oidc-middleware"
+import authMiddleware from "./auth-middleware"
 
 import { S3_BUCKET, S3_ENDPOINT } from "./s3"
 import { version, author } from "./package.json"
