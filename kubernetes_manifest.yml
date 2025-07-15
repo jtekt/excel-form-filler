@@ -20,8 +20,8 @@ spec:
               value: excel-filler
             - name: LOKI_URL
               value: http://loki.monitoring:3100
-            - name: IDENTIFICATION_URL
-              value: http://10.115.1.100:30097/v3/users/self
+            - name: OIDC_JWKS_URI
+              value: http://10.115.1.100:30416/realms/jtekt/protocol/openid-connect/certs
           envFrom:
             - secretRef:
                 name: environment-variables
