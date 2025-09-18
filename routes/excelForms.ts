@@ -8,6 +8,7 @@ import {
   updateForm,
   updateFile,
   deleteForm,
+  downloadFilledForm,
 } from "../controllers/excelForms";
 import { uploadMiddleware } from "../s3";
 
@@ -21,6 +22,8 @@ router.get("/:_id", readForm);
 router.patch("/:_id", updateForm);
 router.delete("/:_id", deleteForm);
 router.get("/:_id/file", getFormFile);
+router.post("/:_id/file", downloadFilledForm);
+
 router.patch("/:_id/file", uploadMiddleware, updateFile);
 
 export default router;

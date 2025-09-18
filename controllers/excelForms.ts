@@ -102,3 +102,23 @@ export const getFormFile = async (c: Context) => {
 
   return sendFormFromS3(c, config.fileKey);
 };
+
+export const downloadFilledForm = async (c: Context) => {
+  const { _id } = c.req.param();
+  const { data } = await c.req.json();
+  const config = await ExcelForm.findById(_id);
+
+  if (!config) throw createHttpError(404, `Form ${_id} not found`);
+
+  const workbook = await fillExcel(data, config);
+
+  const fileBuffer = await workbook.xlsx.writeBuffer();
+
+  // c.header("Content-Disposition", `attachment; filename="${config.fileKey}"`);
+  // c.header(
+  //   "Content-Type",
+  //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  // );
+
+  return new Response(fileBuffer);
+};
