@@ -36,6 +36,7 @@ export const createForm = async (c: Context) => {
 };
 
 export const readForms = async (c: Context) => {
+  // TODO: pagination
   const query = {};
   const items = await ExcelForm.find(query);
   const total = await ExcelForm.countDocuments(query);
@@ -63,8 +64,7 @@ export const updateFile = async (c: Context) => {
 export const updateForm = async (c: Context) => {
   const { _id } = c.req.param();
   const { _id: _, ...properties } = await c.req.json();
-  let body: any = properties;
-  const item = await ExcelForm.findByIdAndUpdate(_id, body);
+  const item = await ExcelForm.findByIdAndUpdate(_id, properties);
   return c.json(item);
 };
 
@@ -98,12 +98,13 @@ export const getFormFile = async (c: Context) => {
   const { _id } = c.req.param();
   const config = await ExcelForm.findById(_id);
 
-  if (!config) throw "Not found";
+  if (!config) throw createHttpError(404, `Form ${_id} not found`);
 
   return sendFormFromS3(c, config.fileKey);
 };
 
 export const downloadFilledForm = async (c: Context) => {
+  // TODO: make this usable with a GET request too as more RESTful
   const { _id } = c.req.param();
   const { data } = await c.req.json();
   const config = await ExcelForm.findById(_id);
@@ -114,6 +115,7 @@ export const downloadFilledForm = async (c: Context) => {
 
   const fileBuffer = await workbook.xlsx.writeBuffer();
 
+  // Those cause errors with axios when expected content is blob
   // c.header("Content-Disposition", `attachment; filename="${config.fileKey}"`);
   // c.header(
   //   "Content-Type",
