@@ -18,6 +18,8 @@ spec:
           env:
             - name: S3_BUCKET
               value: jtekt-excel-form-filler
+            - name: SMTP_SECURE
+              valvalue: "yes"
             # - name: LOKI_URL
             #   value: http://loki.monitoring:3100
             - name: OIDC_JWKS_URI
