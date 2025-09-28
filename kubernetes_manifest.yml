@@ -17,10 +17,11 @@ spec:
           image: ${CONTAINER_IMAGE_TAGGED}
           env:
             - name: S3_BUCKET
-              value: excel-filler
-            - name: LOKI_URL
-              value: http://loki.monitoring:3100
+              value: jtekt-excel-form-filler
+            # - name: LOKI_URL
+            #   value: http://loki.monitoring:3100
             - name: OIDC_JWKS_URI
+              # TODO: use K8s DNS
               value: http://10.115.1.100:30416/realms/jtekt/protocol/openid-connect/certs
           envFrom:
             - secretRef:
