@@ -16,6 +16,7 @@ import {
 } from "./db";
 import excelFormsRouter from "./routes/excelForms";
 import { LOKI_URL } from "./logger";
+import { SMTP_HOST, SMTP_PORT, SMTP_SECURE } from "./mail";
 
 const { APP_PORT = 80, OIDC_JWKS_URI } = process.env;
 if (!OIDC_JWKS_URI) throw "OIDC_JWKS_URI not set";
@@ -40,6 +41,11 @@ app.get("/", (c: Context) => {
     },
     auth: {
       url: OIDC_JWKS_URI,
+    },
+    smtp: {
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: !!SMTP_SECURE,
     },
     loki: LOKI_URL,
   });

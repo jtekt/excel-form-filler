@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { UserEmailConfig } from "./controllers/excelForms";
 
-const {
+export const {
   SMTP_HOST = "localhost",
   SMTP_PORT = "25",
   SMTP_USERNAME,
