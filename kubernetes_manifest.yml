@@ -17,7 +17,7 @@ spec:
           image: ${CONTAINER_IMAGE_TAGGED}
           env:
             - name: S3_BUCKET
-              value: jtekt-excel-form-filler
+              value: excel-filler
             # - name: SMTP_SECURE
             #   value: "yes"
             - name: LOKI_URL
