@@ -18,26 +18,17 @@ spec:
           env:
             - name: S3_BUCKET
               value: jtekt-excel-form-filler
-            - name: SMTP_SECURE
-              value: "yes"
+            # - name: SMTP_SECURE
+            #   value: "yes"
             - name: LOKI_URL
               value: http://loki.monitoring:3100
             - name: OIDC_JWKS_URI
-              # TODO: use K8s DNS
               value: http://10.115.1.100:30416/realms/jtekt/protocol/openid-connect/certs
           envFrom:
             - secretRef:
                 name: environment-variables
             - secretRef:
                 name: excel-form-filler-env
-      #     volumeMounts:
-      #       - mountPath: /usr/src/app/config/config.yml
-      #         name: ${APPLICATION_NAME}-config
-      #         subPath: config.yml
-      # volumes:
-      #   - name: ${APPLICATION_NAME}-config
-      #     configMap:
-      #       name: ${APPLICATION_NAME}-config
       imagePullSecrets:
         - name: ${K8S_ECR_SECRET_NAME}
 
