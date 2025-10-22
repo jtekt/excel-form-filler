@@ -87,13 +87,18 @@ export const submitForm = async (c: Context) => {
   const fileBuffer = await workbook.xlsx.writeBuffer();
   await sendAttachmentByEmail(fileBuffer, email, config);
 
-  logger.info({
-    action: "send",
-    fileKey: config.fileKey,
-    user: c.get("user"),
-    email,
-    data,
-  });
+  try {
+    logger.info({
+      action: "send",
+      fileKey: config.fileKey,
+      user: c.get("user"),
+      email,
+      data,
+    });
+  } catch (error) {
+    console.log("Loki logging failed");
+    console.error(error);
+  }
 
   return c.json("OK");
 };
@@ -126,12 +131,17 @@ export const downloadFilledForm = async (c: Context) => {
   //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   // );
 
-  logger.info({
-    action: "download",
-    fileKey: config.fileKey,
-    user: c.get("user"),
-    data,
-  });
+  try {
+    logger.info({
+      action: "download",
+      fileKey: config.fileKey,
+      user: c.get("user"),
+      data,
+    });
+  } catch (error) {
+    console.log("Loki logging failed");
+    console.error(error);
+  }
 
   return new Response(fileBuffer);
 };
