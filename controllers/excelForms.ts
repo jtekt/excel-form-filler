@@ -87,11 +87,11 @@ export const submitForm = async (c: Context) => {
   const fileBuffer = await workbook.xlsx.writeBuffer();
   await sendAttachmentByEmail(fileBuffer, email, config);
 
-  // TODO: consider user from keycloak, mail entirely
   logger.info({
     action: "send",
-    fileKey: config.fileKey,
+    user: c.get("user"),
     from: email.from,
+    email,
     data,
   });
 
@@ -108,7 +108,7 @@ export const getFormFile = async (c: Context) => {
 };
 
 export const downloadFilledForm = async (c: Context) => {
-  // TODO: make this usable with a GET request too as more RESTful
+  // TODO: make this usable with a GET request as more RESTful
   const { _id } = c.req.param();
   const { data } = await c.req.json();
   const config = await ExcelForm.findById(_id);
@@ -129,6 +129,7 @@ export const downloadFilledForm = async (c: Context) => {
   logger.info({
     action: "download",
     fileKey: config.fileKey,
+    user: c.get("user"),
     data,
   });
 
