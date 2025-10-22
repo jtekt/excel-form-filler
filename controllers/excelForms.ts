@@ -89,8 +89,8 @@ export const submitForm = async (c: Context) => {
 
   logger.info({
     action: "send",
+    fileKey: config.fileKey,
     user: c.get("user"),
-    from: email.from,
     email,
     data,
   });
