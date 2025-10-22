@@ -5,6 +5,7 @@ import { sendAttachmentByEmail } from "../mail";
 import { sendFormFromS3 } from "../s3";
 import createHttpError from "http-errors";
 import { logger } from "../logger";
+
 export type ConfigField = {
   key: string;
   sheet: string;
@@ -86,9 +87,12 @@ export const submitForm = async (c: Context) => {
   const fileBuffer = await workbook.xlsx.writeBuffer();
   await sendAttachmentByEmail(fileBuffer, email, config);
 
+  // TODO: consider user from keycloak, mail entirely
   logger.info({
-    from: email.from,
+    action: "send",
     fileKey: config.fileKey,
+    from: email.from,
+    data,
   });
 
   return c.json("OK");
@@ -121,6 +125,12 @@ export const downloadFilledForm = async (c: Context) => {
   //   "Content-Type",
   //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   // );
+
+  logger.info({
+    action: "download",
+    fileKey: config.fileKey,
+    data,
+  });
 
   return new Response(fileBuffer);
 };
